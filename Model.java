@@ -8,14 +8,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Model {
-	private ArrayList<Wall> walls;
 	private int begX, begY;
 	private boolean colliding;
 	Pacman pacman;
 	ArrayList<Sprite> sprites;
 
 	public Model() {
-		walls = new ArrayList<Wall>();
 		sprites = new ArrayList<Sprite>();
 		pacman = new Pacman();
 	}
@@ -32,22 +30,26 @@ public class Model {
 		int pacRight = (pacman.getX() + pacman.getW());
 		colliding = false;
 
-		for (int i = 0; i < walls.size(); i++) {
-			Wall wall = walls.get(i);
-			int wallTop = wall.getY();
-			int wallLeft = wall.getX();
-			int wallBottom = (wall.getY() + wall.getH());
-			int wallRight = (wall.getX() + wall.getW());
+		for (int i = 0; i < sprites.size(); i++) {
+			Sprite sprite = sprites.get(i);
+			int spriteTop = sprite.getY();
+			int spriteLeft = sprite.getX();
+			int spriteBottom = (sprite.getY() + sprite.getH());
+			int spriteRight = (sprite.getX() + sprite.getW());
 
-			if ((((pacHead < wallTop) && (pacToes > wallBottom)) || ((pacToes > wallTop) && (pacToes < wallBottom)))
-					&& ((pacRight > wallLeft) && (pacLeft < wallRight))) {
+			if ((((pacHead < spriteTop) && (pacToes > spriteBottom)) || ((pacToes > spriteTop) && (pacToes < spriteBottom)))
+					&& ((pacRight > spriteLeft) && (pacLeft < spriteRight))) {
 				colliding = true;
-				pacman.getOutOfWall(scrollY);
+				if (sprite.isWall()){
+					pacman.getOutOfWall(scrollY);
+				}
 			}
-			if ((((pacLeft > wallLeft) && (pacLeft < wallRight)) || ((pacRight > wallLeft) && (pacRight < wallRight)))
-					&& ((pacToes > wallTop) && (pacHead < wallBottom))) {
+			if ((((pacLeft > spriteLeft) && (pacLeft < spriteRight)) || ((pacRight > spriteLeft) && (pacRight < spriteRight)))
+					&& ((pacToes > spriteTop) && (pacHead < spriteBottom))) {
 				colliding = true;
-				pacman.getOutOfWall(scrollY);
+				if (sprite.isWall()){
+					pacman.getOutOfWall(scrollY);
+				}
 			}
 		}
 	}
@@ -126,16 +128,12 @@ public class Model {
 		return sprites;
 	}
 
-	public Pacman getPacman() {
-		return pacman;
-	}
-
 	public int getLowestWallY() {
 		int lowestY = 0;
 		for (int i = 0; i < getSprites().size(); i++) {
 			if(sprites.get(i).isWall()){
 				if (sprites.get(i).getY() > lowestY) {
-					lowestY = (sprites.get(i).getY());
+					lowestY = (sprites.get(i).getY() + sprites.get(i).getH());
 				}
 			}
 		}
@@ -143,11 +141,11 @@ public class Model {
 	}
 
 	public int getHighestWallY() {
-		int highestY = 800;
+		int highestY = Game.WINDOW_HEIGHT;
 		for (int i = 0; i < getSprites().size(); i++) {
 			if(sprites.get(i).isWall()){
 				if (sprites.get(i).getY() < highestY) {
-					highestY = (sprites.get(i).getY()) + sprites.get(i).getH();
+					highestY = (sprites.get(i).getY());
 				}
 			}
 		}

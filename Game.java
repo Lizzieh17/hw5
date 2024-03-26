@@ -12,7 +12,7 @@ public class Game extends JFrame
 	private Model model;
 	private View view;
 	private Controller controller;
-static int WINDOW_HEIGHT = 800;
+	static int WINDOW_HEIGHT = 800;
 	static int WINDOW_WIDTH = 800;
 
 	public Game()

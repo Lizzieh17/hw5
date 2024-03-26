@@ -30,12 +30,6 @@ public class View extends JPanel
 		for(int i = 0; i < model.getSprites().size(); i++){
 			model.sprites.get(i).draw(g, scrollY);
 		}
-		
-		// for(int i = 0; i < model.getWalls().size(); i++){
-		// 	Wall wall = model.getWalls().get(i);
-		// 	wall.draw(g, scrollY);
-		// }
-		// model.getPacman().draw(g, scrollY);
 	}
 
 	static BufferedImage loadImage(String filepath){
@@ -52,15 +46,15 @@ public class View extends JPanel
 	}
 
 	public void cameraUp(){
-		//if((model.getHighestWallY() < (scrollY)) && (!model.isColliding())){
+		if((model.getHighestWallY() < (scrollY)) && (!model.isColliding())){
 			scrollY -= model.getModelSpeed();
-		//}
+		}
 	}
 	
 	public void cameraDown(){
-		//if(((model.getLowestWallY() - 760) > (scrollY)) && (!model.isColliding())){
+		if(((model.getLowestWallY() - 760) > (scrollY)) && (!model.isColliding())){
 			scrollY += model.getModelSpeed();
-		//}
+		}
 	}
 	public int getScrollY(){
 		return scrollY;
