@@ -67,7 +67,6 @@ public class Fruit extends Sprite {
             speed = 8;
         }
         y += speed * ydir;
-        System.out.println("updating fruit, ydir: " + ydir);
         if (eaten) {
             return false;
         }
