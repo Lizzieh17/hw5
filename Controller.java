@@ -16,6 +16,7 @@ public class Controller implements ActionListener, MouseListener, KeyListener {
 	private View view;
 	private Model model;
 	private boolean addWalls;
+	private boolean deleteWalls;
 	private boolean addPellets;
 	private boolean addFruit;
 	private boolean editMode;
@@ -53,7 +54,7 @@ public class Controller implements ActionListener, MouseListener, KeyListener {
 			}
 			else if (addFruit){
 				model.addFruit(e.getX(), e.getY(), view.getScrollY());
-			}else {
+			}else if(deleteWalls){
 				for (int i = 0; i < model.getSprites().size(); i++) {
 					if ((addWalls == false) && (model.getSprites().get(i).spriteClicked(e.getX(), (e.getY() + view.getScrollY())) == true) 
 						&& (model.getSprites().get(i).isWall())) {
@@ -120,22 +121,31 @@ public class Controller implements ActionListener, MouseListener, KeyListener {
 			addWalls = !addWalls;
 			addPellets = false;
 			addFruit = false;
+			deleteWalls = false;
 			//System.out.println("addWalls is " + addWalls);
 			model.setAddMode("Adding Walls");
 		}
 		if (key == 'p') {
-			addPellets = !addPellets;
+			addPellets = true;
 			addFruit = false;
 			addWalls = false;
+			deleteWalls = false;
 			//System.out.println("addPellets is " + addPellets);
 			model.setAddMode("Adding Pellets");
 		}
 		if (key == 'f') {
-			addFruit = !addFruit;
+			addFruit = true;
 			addWalls = false;
 			addPellets = false;
 			//System.out.println("addFruit is " + addFruit);
 			model.setAddMode("Adding Fruits");
+		}
+		if (key == 'r') {
+			addFruit = false;
+			addWalls = false;
+			addPellets = false;
+			deleteWalls = true;
+			model.setAddMode("Deleting Walls");
 		}
 		// enter editmode
 		if (key == 'e') {	
@@ -144,6 +154,7 @@ public class Controller implements ActionListener, MouseListener, KeyListener {
 			// System.out.println("Edit mode is " + editMode);
 			if (addWalls == false) {
 				addWalls = true;
+				deleteWalls = false;
 				model.setAddMode("Adding Walls");
 				// System.out.println("Add mode is " + addWalls);
 			}

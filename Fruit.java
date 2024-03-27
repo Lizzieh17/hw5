@@ -59,7 +59,6 @@ public class Fruit extends Sprite {
     }
 
     public boolean update() {
-        // need to nom nom and remove if pac is hiting me!
         if(ydir == 0){
             ydir = 1;
         }

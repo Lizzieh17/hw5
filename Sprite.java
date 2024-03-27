@@ -12,8 +12,8 @@ abstract class Sprite {
 
     public boolean spriteClicked(int mouseX, int mouseY) {
         if ((mouseX > x && mouseX < (x + w)) && (mouseY > y && mouseY < (y + h))) {
-            System.out.println("Sprite detected!");
-            System.out.println(toString());
+           // System.out.println("Sprite detected!");
+            //System.out.println(toString());
             return true;
         }
         return false;

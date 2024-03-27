@@ -9,7 +9,7 @@ import java.awt.Image;
 
 public class Pellet extends Sprite {
     static Image pellet_image = null;
-    static int PELLET_WIDTH = 25;
+    static int PELLET_WIDTH = 40;
     static int PELLET_HEIGHT = 25;
     private boolean eaten;
 
