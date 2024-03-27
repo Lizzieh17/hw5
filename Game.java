@@ -7,6 +7,7 @@
 import javax.swing.JFrame;
 import java.awt.Toolkit;
 
+//our main game class which holds our main function
 public class Game extends JFrame
 {
 	private Model model;
@@ -20,7 +21,7 @@ public class Game extends JFrame
 		model = new Model();
 		controller = new Controller(model);
 		view = new View(controller, model);
-		this.setTitle("Starting Pacman");
+		this.setTitle("Assignment 5 - Mrs.Pacman by Lizzie Howell");
 		this.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
 		this.setFocusable(true);
 		this.getContentPane().add(view);

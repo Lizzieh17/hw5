@@ -5,6 +5,7 @@
  * Assignment 5 - Polymorphism
  */
 
+//controller class: handles user input to effect sprites
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
@@ -47,18 +48,24 @@ public class Controller implements ActionListener, MouseListener, KeyListener {
 	public void mousePressed(MouseEvent e) {
 		if (editMode) {
 			if (addWalls) {
+				//begin the wall
 				model.startWalls(e.getX(), e.getY());
 			} 
 			else if (addPellets){
+				//add a pellet to screen where the mouse is
 				model.addPellet(e.getX(), e.getY(), view.getScrollY());
 			}
 			else if (addFruit){
-				model.addFruit(e.getX(), e.getY(), view.getScrollY());
+				// add a strawberry to the screen where the fruit is
+				int fruitDir = model.sprites.size() % 2;
+				// System.out.println("random direction for fruit: " + fruitDir);
+				model.addFruit(e.getX(), e.getY(), view.getScrollY(), fruitDir);
 			}else if(deleteWalls){
-				for (int i = 0; i < model.getSprites().size(); i++) {
-					if ((addWalls == false) && (model.getSprites().get(i).spriteClicked(e.getX(), (e.getY() + view.getScrollY())) == true) 
-						&& (model.getSprites().get(i).isWall())) {
-						model.getSprites().remove(i);
+				//delete clicked wall
+				for (int i = 0; i < model.sprites.size(); i++) {
+					if ((addWalls == false) && (model.sprites.get(i).spriteClicked(e.getX(), (e.getY() + view.getScrollY())) == true) 
+						&& (model.sprites.get(i).isWall())) {
+						model.sprites.remove(i);
 					}
 				}
 			}
@@ -67,6 +74,7 @@ public class Controller implements ActionListener, MouseListener, KeyListener {
 
 	public void mouseReleased(MouseEvent e) {
 		if (addWalls == true && editMode == true) {
+			//stop wall and create it
 			model.stopWalls(e.getX(), e.getY(), view.getScrollY());
 		}
 	}
@@ -117,29 +125,30 @@ public class Controller implements ActionListener, MouseListener, KeyListener {
 		if (key == 'l') {
 			model.load();
 		}
+		//addWall mode
 		if (key == 'a') {
 			addWalls = !addWalls;
 			addPellets = false;
 			addFruit = false;
 			deleteWalls = false;
-			//System.out.println("addWalls is " + addWalls);
 			model.setAddMode("Adding Walls");
 		}
+		//addPellet mode
 		if (key == 'p') {
 			addPellets = true;
 			addFruit = false;
 			addWalls = false;
 			deleteWalls = false;
-			//System.out.println("addPellets is " + addPellets);
 			model.setAddMode("Adding Pellets");
 		}
+		//addFruit mode
 		if (key == 'f') {
 			addFruit = true;
 			addWalls = false;
 			addPellets = false;
-			//System.out.println("addFruit is " + addFruit);
 			model.setAddMode("Adding Fruits");
 		}
+		//deleteWalls mode
 		if (key == 'r') {
 			addFruit = false;
 			addWalls = false;
@@ -149,20 +158,20 @@ public class Controller implements ActionListener, MouseListener, KeyListener {
 		}
 		// enter editmode
 		if (key == 'e') {	
+			//change editmode value
 			editMode = !editMode;
+			//tell model we are editing so string on screen updates
 			model.setEditing(editMode);
-			// System.out.println("Edit mode is " + editMode);
 			if (addWalls == false) {
 				addWalls = true;
 				deleteWalls = false;
 				model.setAddMode("Adding Walls");
-				// System.out.println("Add mode is " + addWalls);
 			}
 		}
 
-		// clear screen
+		// clear screen of all sprites
 		if (key == 'c') {
-			if (model.getSprites().size() > 0) {
+			if (model.sprites.size() > 0) {
 				model.clearScreen();
 				System.out.println("Cleared all Sprites.");
 			} else {
@@ -191,19 +200,23 @@ public class Controller implements ActionListener, MouseListener, KeyListener {
 	public void update() {
 		model.pacman.savePac();
 		if (keyRight) {
+			//move pacman to the right and animate her
 			model.pacman.movePacRight();
 			model.arrowKeyPressed(2);
 		}
 		if (keyLeft) {
+			//move pacman to the left and animate her
 			model.pacman.movePacLeft();
 			model.arrowKeyPressed(0);
 		}
 		if (keyDown) {
+			//move pacman down, scroll down, and animate her
 			model.pacman.movePacDown();
 			view.cameraDown();
 			model.arrowKeyPressed(3);
 		}
 		if (keyUp) {
+			//move pacman up, scroll up, and animate her
 			model.pacman.movePacUp();
 			view.cameraUp();		
 			model.arrowKeyPressed(1);

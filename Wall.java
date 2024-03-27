@@ -4,6 +4,7 @@
  * Assignment 5 - Polymorphism
  */
 
+//wall class: extends the sprite class
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -25,6 +26,7 @@ public class Wall extends Sprite{
     }
 
     public boolean update() { 
+        // walls will always exists in this way, they are removed by the mouse in controller.
         return true;
     }
 
@@ -59,7 +61,6 @@ public class Wall extends Sprite{
     }
 
     JSON marshal() {
-        // System.out.println("marshal from Wall called.");
         JSON ob = JSON.newObject();
         ob.add("x", x);
         ob.add("y", y);
@@ -69,7 +70,6 @@ public class Wall extends Sprite{
     }
 
     public void unmarshal(JSON ob) {
-        // System.out.println("unmarshal from Wall called.");
         x = (int) ob.getLong("x");
         y = (int) ob.getLong("y");
         w = (int) ob.getLong("w");

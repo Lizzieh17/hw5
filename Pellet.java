@@ -4,6 +4,7 @@
  * Assignment 5 - Polymorphism
  */
 
+//pellet class: our pellet extends the sprite class; pellet draws itself, updates if it is eaten or not, and marshalls itself
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -53,6 +54,8 @@ public class Pellet extends Sprite {
     }
 
     public boolean update() {
+        //if marked as eaten, then retunr false and get removed
+        // if not marked (i.e. the pellet still exists) then return true
         if(eaten){
             return false;
         }
@@ -76,7 +79,6 @@ public class Pellet extends Sprite {
     }
 
     JSON marshal() {
-        // System.out.println("marshal from Pellet called.");
         JSON ob = JSON.newObject();
         ob.add("x", x);
         ob.add("y", y);
@@ -86,7 +88,6 @@ public class Pellet extends Sprite {
     }
 
     public void unmarshal(JSON ob) {
-        // System.out.println("unmarshal from Pellet called.");
         x = (int) ob.getLong("x");
         y = (int) ob.getLong("y");
         w = (int) ob.getLong("w");

@@ -4,14 +4,15 @@
  * Assignment 5 - Polymorphism
  */
 
+//Pacman class: our pacman sprite with her image, movement, and ability to get out of walls
 import java.awt.Graphics;
 import java.awt.Image;
 
 public class Pacman extends Sprite{
     private double speed;
     static Image[][] pacmanImages = null;
-    static int PAC_WIDTH = 50;
-    static int PAC_HEIGHT = 50;
+    static int PAC_WIDTH = 40;
+    static int PAC_HEIGHT = 40;
     private Image currentImage;
     private int direction;
     private int frame;
@@ -54,42 +55,15 @@ public class Pacman extends Sprite{
         this.y = y;
         w = PAC_WIDTH;
         h = PAC_HEIGHT;
-        this.speed = 5;
-    }
-
-    public void savePac() {
-        prevX = x;
-        prevY = y;
+        speed = 5;
     }
 
     public void draw(Graphics g, int scrollY) {
-        // System.out.println("draw pac invoked");
         g.drawImage(currentImage, x, y - scrollY, w, h, null);
     }
     public boolean update() {   
+        //pacman always exists
         return true;
-    }
-
-    public boolean isMoving(){
-        return true;
-    }
-
-    JSON marshal() {
-        // System.out.println("marshal from Wall called.");
-        JSON ob = JSON.newObject();
-        ob.add("x", x);
-        ob.add("y", y);
-        ob.add("w", w);
-        ob.add("h", h);
-        return ob;
-    }
-
-    public void unmarshal(JSON ob) {
-        // System.out.println("unmarshal from Wall called.");
-        x = (int) ob.getLong("x");
-        y = (int) ob.getLong("y");
-        w = (int) ob.getLong("w");
-        h = (int) ob.getLong("h");
     }
 
     // unmarshaling contructor
@@ -100,18 +74,27 @@ public class Pacman extends Sprite{
         x = (int) ob.getLong("x");
     }
 
+    public void savePac() {
+        //save pac's x and y to her previous x and y
+        prevX = x;
+        prevY = y;
+    }
+
     public void getOutOfWall() {
-        this.x = this.prevX;
-        this.y = this.prevY;
+        //get out of wall by setting pac's x and y to her previous x and y
+        x = prevX;
+        y = prevY;
     }
 
     public void setImage(int d, int i) {
-        this.direction = d;
-        this.frame = i;
+        //set image based on pacs direction and which frame to update to
+        direction = d;
+        frame = i;
         currentImage = pacmanImages[d][i];
     }
 
     public void animate(int d) {
+        //animate pacman and update her frame and direction
         direction = d;
         frame++;
         if (frame >= MAX_IMAGES) {
@@ -121,34 +104,34 @@ public class Pacman extends Sprite{
     }
 
     public void movePacRight() {
+        //move pacman to the right by updating her x with her speed and set her previous x
         prevX = x;
-        if (x >= 775) {
-            x = 4;
-        } else {
-            x += speed;
-        }
+        x += speed;
     }
 
     public void movePacLeft() {
+        //move pacman to the left by updating her x with her speed and set her previous x
         prevX = x;
-        if (x <= 4) {
-            x = 775;
-        } else {
-            x -= speed;
-        }
+        x -= speed;
     }
 
     public void movePacUp() {
+        //move pacman up by updating her y with her speed and set her previous y
         prevY = y;
         y -= speed;
     }
 
     public void movePacDown() {
+        //move pacman down by updating her y with her speed and set her previous y
         prevY = y;
         y += speed;
     }
 
     public boolean isPac() {
+        return true;
+    }
+
+    public boolean isMoving(){
         return true;
     }
 
@@ -159,5 +142,21 @@ public class Pacman extends Sprite{
     @Override
     public String toString() {
         return "Pacman (x,y) = (" + x + ", " + y + ")" + ", Previous Pacman (x,y) = (" + prevX + " , " + prevY + " )";
+    }
+
+    JSON marshal() {
+        JSON ob = JSON.newObject();
+        ob.add("x", x);
+        ob.add("y", y);
+        ob.add("w", w);
+        ob.add("h", h);
+        return ob;
+    }
+
+    public void unmarshal(JSON ob) {
+        x = (int) ob.getLong("x");
+        y = (int) ob.getLong("y");
+        w = (int) ob.getLong("w");
+        h = (int) ob.getLong("h");
     }
 }
