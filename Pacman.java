@@ -10,6 +10,8 @@ import java.awt.Image;
 public class Pacman extends Sprite{
     private double speed;
     static Image[][] pacmanImages = null;
+    static int PAC_WIDTH = 50;
+    static int PAC_HEIGHT = 50;
     private Image currentImage;
     private int direction;
     private int frame;
@@ -20,8 +22,8 @@ public class Pacman extends Sprite{
     public Pacman() {
         x = 400;
         y = 400;
-        w = 40;
-        h = 40;
+        w = PAC_WIDTH;
+        h = PAC_HEIGHT;
         speed = 5.00;
         direction = 0;
         frame = 0;
@@ -50,8 +52,8 @@ public class Pacman extends Sprite{
     public Pacman(int x, int y) {
         this.x = x;
         this.y = y;
-        w = 50;
-        h = 50;
+        w = PAC_WIDTH;
+        h = PAC_HEIGHT;
         this.speed = 5;
     }
 
