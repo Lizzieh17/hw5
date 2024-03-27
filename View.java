@@ -24,9 +24,16 @@ public class View extends JPanel
 	}
 
 	public void paintComponent(Graphics g){
-		g.setColor(new Color(25, 25, 25));
-		g.fillRect(0, 0, this.getWidth(), this.getHeight());
-		
+		if(model.isEditing()){
+			g.setColor(new Color(25, 25, 25));
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+			g.setColor(new Color(245, 245, 10));
+            g.drawString("Edit Mode: " + model.getAddMode(), 600, 750);
+		}else {
+			g.setColor(new Color(0));
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+		}
+	
 		for(int i = 0; i < model.getSprites().size(); i++){
 			model.sprites.get(i).draw(g, scrollY);
 		}
@@ -36,6 +43,7 @@ public class View extends JPanel
 		BufferedImage image = null;
 		try{
 			image = ImageIO.read(new File(filepath));
+			//System.out.println(filepath + " loaded");
 		}
 		catch(Exception e){
 			e.printStackTrace(System.err);
@@ -46,13 +54,13 @@ public class View extends JPanel
 	}
 
 	public void cameraUp(){
-		if((model.getHighestWallY() < (scrollY)) && (!model.isColliding())){
+		if((model.getHighestWallY() < (scrollY)) && (!model.isCollidingWithWall()) && (model.pacman.getY() < 700)){
 			scrollY -= model.getModelSpeed();
 		}
 	}
 	
 	public void cameraDown(){
-		if(((model.getLowestWallY() - 760) > (scrollY)) && (!model.isColliding())){
+		if(((model.getLowestWallY() - 760) > (scrollY)) && (!model.isCollidingWithWall()) && (model.pacman.getY() > 200)){
 			scrollY += model.getModelSpeed();
 		}
 	}

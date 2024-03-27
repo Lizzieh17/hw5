@@ -64,7 +64,13 @@ public class Pacman extends Sprite{
         // System.out.println("draw pac invoked");
         g.drawImage(currentImage, x, y - scrollY, w, h, null);
     }
-    public void update() {      }
+    public boolean update() {   
+        return true;
+    }
+
+    public boolean isMoving(){
+        return true;
+    }
 
     JSON marshal() {
         // System.out.println("marshal from Wall called.");
@@ -90,26 +96,9 @@ public class Pacman extends Sprite{
         y = (int) ob.getLong("y");
         w = (int) ob.getLong("w");
         x = (int) ob.getLong("x");
-
-        if (currentImage == null) {
-            try {
-                // i = direction, z = image
-                int count = 0;
-                for (int d = 0; d < 4; d++) {
-                    for (int z = 0; z < 3; z++) {
-                        count++;
-                        pacmanImages[d][z] = View.loadImage("sprite_images/pacman_images/pacman" + (count) + ".png");
-                    }
-                }
-                currentImage = pacmanImages[0][0];
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-                System.exit(1);
-            }
-        }
     }
 
-    public void getOutOfWall(int scrollY) {
+    public void getOutOfWall() {
         this.x = this.prevX;
         this.y = this.prevY;
     }

@@ -9,7 +9,8 @@ import java.util.Iterator;
 
 public class Model {
 	private int begX, begY;
-	private boolean colliding;
+	private String currentAddMode;
+	private boolean collidingWall, editing;
 	Pacman pacman;
 	ArrayList<Sprite> sprites;
 
@@ -19,40 +20,43 @@ public class Model {
 	}
 
 	public void update() {
-		// pacman.update();
-	}
+		collidingWall = false;
+        Iterator<Sprite> iter1 = sprites.iterator();
+        while(iter1.hasNext()){
+            Sprite sprite1 = iter1.next();
+            if(!sprite1.update()) {
+                iter1.remove();
+                continue;
+            }
+            if(!sprite1.isMoving()) {
+                continue;
+            }
 
-	public void checkCollision(int scrollY) {
-		// y = head, x = left, toes = y + h, right = x + w
-		int pacHead = pacman.getY();
-		int pacLeft = pacman.getX();
-		int pacToes = (pacman.getY() + pacman.getH());
-		int pacRight = (pacman.getX() + pacman.getW());
-		colliding = false;
-
-		for (int i = 0; i < sprites.size(); i++) {
-			Sprite sprite = sprites.get(i);
-			int spriteTop = sprite.getY();
-			int spriteLeft = sprite.getX();
-			int spriteBottom = (sprite.getY() + sprite.getH());
-			int spriteRight = (sprite.getX() + sprite.getW());
-
-			if ((((pacHead < spriteTop) && (pacToes > spriteBottom)) || ((pacToes > spriteTop) && (pacToes < spriteBottom)))
-					&& ((pacRight > spriteLeft) && (pacLeft < spriteRight))) {
-				colliding = true;
-				if (sprite.isWall()){
-					pacman.getOutOfWall(scrollY);
+            Iterator<Sprite> iter2 = sprites.iterator();
+            while(iter2.hasNext()){
+                Sprite sprite2 = iter2.next();
+                if (sprite1 != sprite2  && sprite1.doestItCollide(sprite2)){
+					//pac v pellet
+					if(sprite1.isPac() && sprite2.isPellet()){
+						((Pellet)sprite2).eatPellet();
+					}
+					//pac v wall
+					if(sprite1.isPac() && sprite2.isWall()){
+						collidingWall = true;
+						((Pacman)sprite1).getOutOfWall();
+					}
+					//pac v fruit
+					if(sprite1.isPac() && sprite2.isFruit()){
+						((Fruit)sprite2).eatFruit();
+					}
+					//fruit v wall
+					if(sprite1.isFruit() && sprite2.isWall()){
+						((Fruit)sprite1).changeYdir();
+					}
 				}
-			}
-			if ((((pacLeft > spriteLeft) && (pacLeft < spriteRight)) || ((pacRight > spriteLeft) && (pacRight < spriteRight)))
-					&& ((pacToes > spriteTop) && (pacHead < spriteBottom))) {
-				colliding = true;
-				if (sprite.isWall()){
-					pacman.getOutOfWall(scrollY);
-				}
-			}
-		}
-	}
+            }
+        }
+    }
 
 	// 0 = left; 1 = up; 2= right; 3 = down;
 	public void arrowKeyPressed(int direction) {
@@ -97,16 +101,33 @@ public class Model {
 		} else if (newY > begY) {
 			height = newY - begY;
 		}
-		// add the new wall
 		if (scrollY != 0) {
 			begY += scrollY;
 		}
+		// add the new wall
 		Wall wall = new Wall(begX, begY, width, height);
 		sprites.add(wall);
 	}
 
+	public void addPellet(int mouseX, int mouseY, int scrollY){
+		if (scrollY != 0) {
+			mouseY += scrollY;
+		}
+		Pellet pellet = new Pellet(mouseX, mouseY);
+		sprites.add(pellet);
+		//System.out.println(pellet.toString());
+	}
+	public void addFruit(int mouseX, int mouseY, int scrollY){
+		if (scrollY != 0) {
+			mouseY += scrollY;
+		}
+		Fruit fruit = new Fruit(mouseX, mouseY);
+		sprites.add(fruit);
+		//System.out.println(fruit.toString());
+	}
+
 	public void clearScreen() {
-		System.out.println("Clearing walls...");
+		System.out.println("Clearing sprites...");
 		Iterator<Sprite> iterate = sprites.iterator();
 		int size = getSprites().size() - 1;
 		while (iterate.hasNext()) {
@@ -116,8 +137,12 @@ public class Model {
 		}
 	}
 
-	public boolean isColliding() {
-		return colliding;
+	public boolean isCollidingWithWall() {
+		return collidingWall;
+	}
+
+	public boolean isEditing() {
+		return editing;
 	}
 
 	public double getModelSpeed() {
@@ -152,6 +177,18 @@ public class Model {
 		return highestY;
 	}
 
+	public String getAddMode() {
+		return currentAddMode;
+	}
+
+	public void setEditing(boolean value) {
+		this.editing = value;
+	}
+
+	public void setAddMode(String value) {
+		currentAddMode = value;
+	}
+
 	public void save() {
 		JSON mapsave = marshal();
 		mapsave.save("map.json");
@@ -162,7 +199,7 @@ public class Model {
 		JSON mapload = JSON.load("map.json");
 		unmarshal(mapload);
 		System.out.println("Your map have been loaded.");
-		System.out.println(getSprites().toString());
+		//System.out.println(getSprites().toString());
 	}
 
 	JSON marshal() {
@@ -170,9 +207,19 @@ public class Model {
 		JSON ob = JSON.newObject();
 		JSON tmpListWalls = JSON.newList();
 		ob.add("walls", tmpListWalls);
+		JSON tmpListPellets = JSON.newList();
+		ob.add("pellets", tmpListPellets);
+		JSON tmpListFruits = JSON.newList();
+		ob.add("fruits", tmpListFruits);
 		for (int i = 0; i < sprites.size(); i++) {
 			if (sprites.get(i).isWall()){
 				tmpListWalls.add(sprites.get(i).marshal());
+			}
+			if (sprites.get(i).isPellet()){
+				tmpListPellets.add(sprites.get(i).marshal());
+			}
+			if (sprites.get(i).isFruit()){
+				tmpListFruits.add(sprites.get(i).marshal());
 			}
 		}
 		return ob;
@@ -180,11 +227,21 @@ public class Model {
 
 	public void unmarshal(JSON ob) {
 		// System.out.println("unmarshal from model called.");
-		//clearScreen();
+		clearScreen();
 		JSON tmpListWalls = ob.get("walls");
 		for (int i = 0; i < tmpListWalls.size(); i++) {
 			Wall wall = new Wall(tmpListWalls.get(i));
 			sprites.add(wall);
+		}
+		JSON tmpListPellets = ob.get("pellets");
+		for (int i = 0; i < tmpListPellets.size(); i++) {
+			Pellet pellet = new Pellet(tmpListPellets.get(i));
+			sprites.add(pellet);
+		}
+		JSON tmpListFruits = ob.get("fruits");
+		for (int i = 0; i < tmpListFruits.size(); i++) {
+			Fruit fruit = new Fruit(tmpListFruits.get(i));
+			sprites.add(fruit);
 		}
 		sprites.add(pacman);
 	}

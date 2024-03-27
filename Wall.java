@@ -24,19 +24,12 @@ public class Wall extends Sprite{
         this.h = h;
     }
 
-    public void update() {  }
+    public boolean update() { 
+        return true;
+    }
 
     public void draw(Graphics g, int scrollY) {
         g.drawImage(wall_image, x, y - scrollY, w, h, null);
-    }
-
-    public boolean wallClicked(int mouseX, int mouseY) {
-        if ((mouseX > x && mouseX < (x + w)) && (mouseY > y && mouseY < (y + h))) {
-            System.out.println("Wall detected!");
-            System.out.println(toString());
-            return true;
-        }
-        return false;
     }
 
     // unmarshaling contructor

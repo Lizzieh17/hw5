@@ -18,8 +18,39 @@ abstract class Sprite {
         }
         return false;
     }
+    
+    public boolean doestItCollide(Sprite sprite2){
+			int sprite1Head = y;
+			int sprite1Left = x;
+			int sprite1Bottom = (y + h);
+			int sprite1Right = (x + w);
+			int sprite2Top = sprite2.getY();
+			int sprite2Left = sprite2.getX();
+			int sprite2Bottom = (sprite2.getY() + sprite2.getH());
+			int sprite2Right = (sprite2.getX() + sprite2.getW());
+            boolean colliding = false;
 
+			if ((((sprite1Head < sprite2Top) && (sprite1Bottom > sprite2Bottom)) || ((sprite1Bottom > sprite2Top) && (sprite1Bottom < sprite2Bottom)))
+					&& ((sprite1Right > sprite2Left) && (sprite1Left < sprite2Right))) {
+                colliding = true;
+			}
+			if ((((sprite1Left > sprite2Left) && (sprite1Left < sprite2Right)) || ((sprite1Right > sprite2Left) && (sprite1Right < sprite2Right)))
+					&& ((sprite1Bottom > sprite2Top) && (sprite1Head < sprite2Bottom))) {
+                colliding = true;
+            }
+        return colliding;
+    }
+
+    public boolean isMoving(){
+        return false;
+    }
     public boolean isWall(){
+        return false;
+    }
+    public boolean isPellet(){
+        return false;
+    }
+    public boolean isFruit(){
         return false;
     }
     public boolean isPac(){
@@ -43,6 +74,6 @@ abstract class Sprite {
     }
 
     abstract void draw(Graphics g, int scrollY);
-    abstract void update();
+    abstract boolean update();
     abstract JSON marshal();
 }
