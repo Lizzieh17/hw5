@@ -111,7 +111,7 @@ public class Fruit extends Sprite {
 
     @Override
     public String toString() {
-        return "Pellet (x,y) = (" + x + ", " + y + ")";
+        return "Fruit (x,y) = (" + x + ", " + y + ")";
     }
 
     JSON marshal() {
